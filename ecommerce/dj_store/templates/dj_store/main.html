@@ -3,76 +3,127 @@
 <html lang="en">
 
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
+    <title>{% block title %}{% endblock title %}</title>
 
-  <title>{% block title %}{% endblock title %}</title>
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'dj_store/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
 
-  <!-- Bootstrap core CSS -->
-  <link href="{% static 'dj_store/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="{% static 'dj_store/css/shop-homepage.css' %}" rel="stylesheet">
 
-  <!-- Custom styles for this template -->
-  <link href="{% static 'dj_store/css/shop-homepage.css' %}" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="{% static 'dj_store/css/main.css' %}" rel="stylesheet">
 
-  <!-- Custom styles for this template -->
-  <link href="{% static 'dj_store/css/main.css' %}" rel="stylesheet">
+    <script type="text/javascript">
+        var user = '{{request.user}}'
+
+        function getToken(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getToken('csrftoken')
+
+        function getCookie(name) {
+            // Split cookie string and get all individual name=value pairs in an array
+            var cookieArr = document.cookie.split(";");
+
+            // Loop through the array elements
+            for(var i = 0; i < cookieArr.length; i++) {
+                var cookiePair = cookieArr[i].split("=");
+
+                /* Removing whitespace at the beginning of the cookie name
+                and compare it with the given string */
+                if(name == cookiePair[0].trim()) {
+                    // Decode the cookie value and return
+                    return decodeURIComponent(cookiePair[1]);
+                }
+            }
+
+            // Return null if not found
+            return null;
+        }
+        var cart = JSON.parse(getCookie('cart'))
+
+        if (cart == undefined){
+            cart = {}
+            console.log('Cart Created!', cart)
+            document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
+        }
+        console.log('Cart:', cart)
+    </script>
 
 </head>
 
 <body>
 
-  <!-- Navigation -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="/">DJ ECOM</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="#">Home
-              <span class="sr-only">(current)</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link btn btn-warning" href="#">Login</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'cart' %}">
-              <img id="cart-icon" src="{% static 'dj_store/images/cart.png' %}" />
-              <span id="cart-total">0</span>
-            </a>
-          </li>
-        </ul>
-      </div>
+        <a class="navbar-brand" href="/">DJ ECOM</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-warning" href="#">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'cart' %}">
+                        <img id="cart-icon" src="{% static 'dj_store/images/cart.png' %}"/>
+                        <span id="cart-total">{{cart_items}}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
-  </nav>
+</nav>
 
-  <!-- Page Content -->
-  <div class="container">
+<!-- Page Content -->
+<div class="container">
 
-      {% block content %}
+    {% block content %}
 
-      {% endblock content %}
+    {% endblock content %}
 
-  </div>
-  <!-- /.container -->
+</div>
+<!-- /.container -->
 
-  <!-- Footer -->
-  <footer class="py-5 bg-dark">
+<!-- Footer -->
+<footer class="py-5 bg-dark">
     <div class="container">
-      <p class="m-0 text-center text-white">Copyright &copy; DJ ECOM 2021</p>
+        <p class="m-0 text-center text-white">Copyright &copy; DJ ECOM 2021</p>
     </div>
     <!-- /.container -->
-  </footer>
+</footer>
 
-  <!-- Bootstrap core JavaScript -->
-  <script src="{% static 'dj_store/vendor/jquery/jquery.min.js' %}"></script>
-  <script src="{% static 'dj_store/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- Bootstrap core JavaScript -->
+<script src="{% static 'dj_store/vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'dj_store/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'dj_store/js/cart.js' %}"></script>
 
 </body>
 
